@@ -1,3 +1,8 @@
 aws_region   = "ap-southeast-1"
 environment  = "dev"
 project_name = "healthcare-portal"
+vpc_cidr          = "10.0.0.0/16"
+db_instance_class = "db.t4g.micro"
+db_name           = "portal"
+db_username       = "portaladmin"
+api_image_tag     = "latest"
