@@ -31,7 +31,7 @@ resource "aws_security_group" "db" {
 resource "aws_db_instance" "main" {
   identifier             = "${var.project_name}-${var.environment}"
   engine                 = "postgres"
-  engine_version         = "16.3"
+  # engine_version         = "16.3"
   instance_class         = var.db_instance_class
   allocated_storage      = 20
   max_allocated_storage  = 100
