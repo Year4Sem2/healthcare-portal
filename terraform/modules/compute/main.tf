@@ -238,11 +238,12 @@ resource "aws_ecs_task_definition" "api" {
     environment = [
       { name = "NODE_ENV",  value = "production" },
       { name = "PORT",      value = "3000" },
-      { name = "AWS_REGION", value = var.aws_region }
+      { name = "AWS_REGION", value = var.aws_region },
+      { name = "DB_SECRET_ARN", value = var.db_secret_arn } 
     ]
 
     secrets = [
-      { name = "DB_SECRET_ARN", valueFrom = var.db_secret_arn },
+      # { name = "DB_SECRET_ARN", valueFrom = var.db_secret_arn },
       { name = "JWT_SECRET",    valueFrom = "${aws_secretsmanager_secret.jwt.arn}" }
     ]
 
