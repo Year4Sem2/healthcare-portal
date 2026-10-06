@@ -64,7 +64,10 @@ resource "aws_iam_role_policy" "ecs_execution_secrets" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["secretsmanager:GetSecretValue", "kms:Decrypt"]
-      Resource = [var.db_secret_arn, var.kms_key_arn]
+      Resource = [
+        var.db_secret_arn,
+        aws_secretsmanager_secret.jwt.arn, 
+        var.kms_key_arn]
     }]
   })
 }
