@@ -85,6 +85,25 @@ resource "aws_iam_role" "ecs_task" {
   })
 }
 
+resource "aws_iam_role_policy" "ecs_task_secrets" {
+  role = aws_iam_role.ecs_task.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "secretsmanager:GetSecretValue",
+        "kms:Decrypt"
+      ]
+      Resource = [
+        var.db_secret_arn,
+        aws_secretsmanager_secret.jwt.arn,
+        var.kms_key_arn
+      ]
+    }]
+  })
+}
+
 # ── CloudWatch log group ─────────────────────────────
 resource "aws_cloudwatch_log_group" "migrations" {
   name              = "/ecs/${var.project_name}-migrations"
