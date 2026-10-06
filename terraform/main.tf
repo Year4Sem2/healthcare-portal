@@ -3,6 +3,7 @@ module "frontend" {
 
   project_name = var.project_name
   environment  = var.environment
+  api_alb_dns  = replace(module.compute.api_url, "http://", "")
 }
 
 # ── M2: Backend infrastructure ───────────────────────────
@@ -47,8 +48,11 @@ module "compute" {
   environment  = var.environment
   vpc_id       = module.networking.vpc_id
   aws_region   = var.aws_region
+  public_subnet_ids  = module.networking.public_subnet_ids
+  private_subnet_ids = module.networking.private_subnet_ids
   db_sg_id     = module.database.db_sg_id
   db_secret_arn = module.database.secret_arn
   kms_key_arn  = module.security.kms_key_arn
   api_image_tag = var.api_image_tag
+  jwt_secret         = var.jwt_secret
 }

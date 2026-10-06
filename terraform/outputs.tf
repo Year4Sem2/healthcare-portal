@@ -51,3 +51,6 @@ output "ecs_cluster_name" {
 output "migrate_task_sg_id" {
   value = module.compute.task_sg_id
 }
+
+output "api_url"          { value = module.compute.api_url }
+output "api_ecr_url"      { value = module.compute.api_ecr_url }

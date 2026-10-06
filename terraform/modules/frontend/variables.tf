@@ -7,3 +7,8 @@ variable "environment" {
   description = "Environment name (dev, staging, prod)"
   type        = string
 }
+
+variable "api_alb_dns" {
+  type    = string
+  default = ""
+}

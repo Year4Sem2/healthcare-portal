@@ -63,14 +63,57 @@ jobs:
           echo "bucket=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
           echo "dist_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
           echo "cf_url=$(terraform output -raw cloudfront_url)" >> $GITHUB_OUTPUT
+      
+      - name: Export Outputs
+        id: tfout
+        run: |
+          echo "bucket=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
+          echo "dist_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
+          echo "cf_url=$(terraform output -raw cloudfront_url)" >> $GITHUB_OUTPUT
+          echo "api_ecr_url=$(terraform output -raw api_ecr_url)" >> $GITHUB_OUTPUT
+          echo "ecs_cluster_name=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
+          echo "ecr_registry=$(echo $(terraform output -raw api_ecr_url) | cut -d/ -f1)" >> $GITHUB_OUTPUT
 
     outputs:
       bucket:  ${{ steps.tfout.outputs.bucket }}
       dist_id: ${{ steps.tfout.outputs.dist_id }}
       cf_url:  ${{ steps.tfout.outputs.cf_url }}
+      api_ecr_url: ${{ steps.tfout.outputs.api_ecr_url }}
+      ecs_cluster_name: ${{ steps.tfout.outputs.ecs_cluster_name }}
+      ecr_registry: ${{ steps.tfout.outputs.ecr_registry }}
 
+  api:
+    name: Build & Deploy API
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-southeast-1
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ap-southeast-1 | \
+            docker login --username AWS --password-stdin ${{ needs.terraform.outputs.ecr_registry }}
+
+      - name: Build and push API image
+        run: |
+          cd api
+          docker build -t ${{ needs.terraform.outputs.api_ecr_url }}:latest .
+          docker push ${{ needs.terraform.outputs.api_ecr_url }}:latest
+
+      - name: Force ECS redeploy
+        run: |
+          aws ecs update-service \
+            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
+            --service healthcare-portal-api \
+            --force-new-deployment \
+            --region ap-southeast-1
   # ─────────────────────────────────────────────
-  # JOB 2 — Frontend: build & deploy to S3/CF
+  # JOB 3 — Frontend: build & deploy to S3/CF
   # ─────────────────────────────────────────────
   frontend:
     name: Frontend

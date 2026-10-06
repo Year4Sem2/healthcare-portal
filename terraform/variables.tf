@@ -46,3 +46,9 @@ variable "api_image_tag" {
   type        = string
   default     = "latest"
 }
+
+variable "jwt_secret" {
+  type      = string
+  sensitive = true
+  default   = "change-me-in-production-min-32-characters-long"
+}
