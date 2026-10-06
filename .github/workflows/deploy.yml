@@ -63,13 +63,6 @@ jobs:
           echo "bucket=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
           echo "dist_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
           echo "cf_url=$(terraform output -raw cloudfront_url)" >> $GITHUB_OUTPUT
-      
-      - name: Export Outputs
-        id: tfout
-        run: |
-          echo "bucket=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
-          echo "dist_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
-          echo "cf_url=$(terraform output -raw cloudfront_url)" >> $GITHUB_OUTPUT
           echo "api_ecr_url=$(terraform output -raw api_ecr_url)" >> $GITHUB_OUTPUT
           echo "ecs_cluster_name=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "ecr_registry=$(echo $(terraform output -raw api_ecr_url) | cut -d/ -f1)" >> $GITHUB_OUTPUT
