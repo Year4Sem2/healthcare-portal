@@ -108,6 +108,12 @@ resource "aws_cloudfront_distribution" "frontend" {
     max_ttl     = 86400
   }
 
+  custom_error_response {
+    error_code         = 403
+    response_code      = 200
+    response_page_path = "/index.html"
+  }
+
   # SPA fallback — send 404s back to index.html so React Router works
   custom_error_response {
     error_code         = 404
