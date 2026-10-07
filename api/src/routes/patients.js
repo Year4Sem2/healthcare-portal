@@ -14,6 +14,14 @@ router.get('/', authMiddleware, requireRole('clinician'), async (_req, res) => {
   res.json(result.rows);
 });
 
+// ── Public: list clinicians (for patient appointment form) ─
+router.get('/clinicians', authMiddleware, async (_req, res) => {
+  const result = await db.query(
+    `SELECT id, full_name FROM users WHERE role = 'clinician' ORDER BY full_name`
+  );
+  res.json(result.rows);
+});
+
 // ── Clinician: get patient detail ─────────────────────────
 router.get('/:id', authMiddleware, requireRole('clinician'), async (req, res) => {
   const result = await db.query(
@@ -25,12 +33,5 @@ router.get('/:id', authMiddleware, requireRole('clinician'), async (req, res) =>
   res.json(result.rows[0]);
 });
 
-// ── Public: list clinicians (for patient appointment form) ─
-router.get('/clinicians', authMiddleware, async (_req, res) => {
-  const result = await db.query(
-    `SELECT id, full_name FROM users WHERE role = 'clinician' ORDER BY full_name`
-  );
-  res.json(result.rows);
-});
 
 export default router;
