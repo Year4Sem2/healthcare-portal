@@ -7,6 +7,7 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import PatientDashboard from './pages/PatientDashboard.jsx';
 import ClinicianDashboard from './pages/ClinicianDashboard.jsx';
+import PatientDetail from './pages/PatientDetail.jsx';
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
@@ -26,6 +27,9 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/patient" element={<ProtectedRoute role="patient"><PatientDashboard /></ProtectedRoute>} />
             <Route path="/clinician" element={<ProtectedRoute role="clinician"><ClinicianDashboard /></ProtectedRoute>} />
+            <Route path="/clinician/patient/:id" element={
+              <ProtectedRoute role="clinician"><PatientDetail /></ProtectedRoute>
+            } />
           </Routes>
         </div>
       </BrowserRouter>
